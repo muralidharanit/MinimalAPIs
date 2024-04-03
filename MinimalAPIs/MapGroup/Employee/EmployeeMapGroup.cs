@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using MinimalAPIs.Filter;
 using MinimalAPIs.Model;
 
 namespace MinimalAPIs.MapGroup
@@ -27,7 +28,8 @@ namespace MinimalAPIs.MapGroup
             });
 
             // Get all employee by id
-            routeGroupBuilder.MapGet("/{id:int}", async (HttpContext context) => {
+            routeGroupBuilder.MapGet("/{id:int}", async (HttpContext context) =>
+            {
 
                 if (!int.TryParse(Convert.ToString(context.Request.RouteValues["id"]), out int id))
                 {
@@ -48,8 +50,9 @@ namespace MinimalAPIs.MapGroup
             });
 
             // Add new employee
-            routeGroupBuilder.MapPost("/", async (HttpContext context, Employee employee) => {
-                
+            routeGroupBuilder.MapPost("/", async (HttpContext context, Employee employee) =>
+            {
+
                 if (employee == null)
                 {
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
@@ -61,7 +64,8 @@ namespace MinimalAPIs.MapGroup
             });
 
             // Update employee info using id
-            routeGroupBuilder.MapPut("/{id:int}", async (HttpContext context, Employee updatedEmployee) => {
+            routeGroupBuilder.MapPut("/{id:int}", async (HttpContext context, Employee updatedEmployee) =>
+            {
 
                 if (!int.TryParse(Convert.ToString(context.Request.RouteValues["id"]), out int id))
                 {
@@ -83,10 +87,11 @@ namespace MinimalAPIs.MapGroup
                 employee.DepartmentId = updatedEmployee.DepartmentId;
 
                 await context.Response.WriteAsync("Employee has been successfully updated");
-            });
+            }).AddEndpointFilter<EmployeeIValidationFilter>();
 
             // Delete employee info using id
-            routeGroupBuilder.MapDelete("/{id:int}", async (HttpContext context) => {
+            routeGroupBuilder.MapDelete("/{id:int}", async (HttpContext context) =>
+            {
 
                 if (!int.TryParse(Convert.ToString(context.Request.RouteValues["id"]), out int id))
                 {
@@ -111,4 +116,6 @@ namespace MinimalAPIs.MapGroup
             return routeGroupBuilder;
         }
     }
+
+    
 }
